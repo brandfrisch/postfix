@@ -1,0 +1,46 @@
+alias_database = hash:/etc/aliases
+alias_maps = hash:/etc/aliases
+append_dot_mydomain = no
+biff = no
+compatibility_level = 2
+header_size_limit = 4096000
+inet_interfaces = 127.0.0.1
+myhostname = {{ inventory_hostname }}
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_size_limit = 0
+readme_directory = no
+recipient_delimiter = +
+{% if postfix_relay_host is defined %}
+relayhost = {{ postfix_relay_host }}
+{% endif %}
+# Enable sasl smtp auth
+{% if postfix_smtp_sasl_password_maps is defined %}
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = {{ postfix_smtp_sasl_password_maps }}
+smtp_sasl_security_options = noanonymous, noplaintext
+smtp_sasl_tls_security_options = noanonymous
+{% endif %}
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+smtp_tls_ciphers = medium
+smtp_tls_exclude_ciphers = EXPORT, LOW, MD5, aDSS, kECDHe, kECDHr, kDHd, kDHr, SEED, IDEA, RC2
+smtp_tls_mandatory_protocols = !SSLv2, !SSLv3
+smtp_tls_protocols = !SSLv2, !SSLv3
+smtp_tls_security_level = encrypt
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtp_use_tls = yes
+smtpd_banner = $myhostname ESMTP
+smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+smtpd_tls_ciphers = medium
+smtpd_tls_dh512_param_file=${config_directory}/dh512.pem
+smtpd_tls_dh1024_param_file=${config_directory}/dh2048.pem
+smtpd_tls_eecdh_grade = strong
+smtpd_tls_exclude_ciphers = EXPORT, LOW, MD5, SEED, IDEA, RC2
+smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+smtpd_tls_mandatory_ciphers = medium
+smtpd_tls_mandatory_protocols = !SSLv2,!SSLv3,!TLSv1,!TLSv1.1
+smtpd_tls_protocols = !SSLv2,!SSLv3,!TLSv1,!TLSv1.1
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtpd_use_tls=yes
+tls_medium_cipherlist = AES128+EECDH:AES128+EDH
+tlsproxy_tls_mandatory_protocols = $smtpd_tls_mandatory_protocols
+tlsproxy_tls_protocols = $smtpd_tls_protocols

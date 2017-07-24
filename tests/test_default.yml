@@ -1,0 +1,34 @@
+---
+- hosts: all
+  gather_facts: false
+  vars:
+    goss:
+      package:
+        postfix:
+          installed: true
+      service:
+        postfix:
+          enabled: true
+          running: true
+      user:
+        postfix:
+          exists: true
+          groups:
+            - postfix
+          home: /var/spool/postfix
+          shell: /bin/false
+      group:
+        postfix:
+          exists: true
+
+  pre_tasks:
+
+    - name: Copy tests to remote
+      copy:
+        content: "{{ goss | to_nice_yaml }}"
+        dest: "/tmp/goss.yml"
+
+    - name: test goss files
+      goss:
+        path: "/tmp/goss.yml"
+        format: documentation

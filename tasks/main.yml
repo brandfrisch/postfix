@@ -1,0 +1,117 @@
+---
+# tasks file for postfix
+
+- name: Disable configuration for Debian
+  debconf:
+    name: 'postfix'
+    question: 'postfix/main_mailer_type'
+    vtype: 'select'
+    value: 'No configuration'
+  tags:
+    - config
+    - postfix
+
+- name: Install postfix packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ postfix_packages }}"
+    - "{{ postfix_additional_packages }}"
+  tags:
+    - package
+    - postfix
+
+- name: Generating Diffie-Hellmann pems
+  shell: "openssl gendh -out /etc/postfix/dh_{{ item }}.pem -2 {{ item }}"
+  args:
+    creates: "/etc/postfix/dh_{{ item }}.pem"
+  with_items:
+    - "{{ postfix_diffie_hellmann_strength }}"
+  tags:
+    - config
+    - postfix
+    - skip_ansible_lint
+
+- name: Configure postfix
+  template:
+    src: "{{ item }}"
+    dest: "/etc/postfix/{{ item | basename | replace('.j2', '') }}"
+  notify: restart postfix
+  with_items:
+    - "{{ postfix_config_files }}"
+  tags:
+    - config
+    - postfix
+
+- name: Create maps folder
+  file:
+    path: /etc/postfix/maps
+    state: directory
+  tags:
+    - config
+    - postfix
+
+- name: Write maps
+  template:
+    src: "{{ item }}"
+    dest: "/etc/postfix/maps/{{ item | basename | replace('.j2', '') }}"
+  with_items:
+    - "{{ postfix_maps }}"
+  register: postfix_maps_update
+  notify: restart postfix
+  tags:
+    - config
+    - postfix
+
+- name: Hash postfix maps
+  when: item.changed and item.dest.endswith('hash')
+  shell: "postmap {{ item.dest }}"
+  with_items:
+    - "{{ postfix_maps_update.results }}"
+  tags:
+    - config
+    - postfix
+    - skip_ansible_lint
+
+- name: Copy aliases
+  when: postfix_catch_all_email is defined
+  template:
+    src: aliases.j2
+    dest: /etc/aliases
+  register: aliases
+  tags:
+    - config
+    - postfix
+
+- name: Hash aliases
+  when: aliases.changed
+  shell: "/usr/sbin/postalias /etc/aliases"
+  tags:
+    - config
+    - postfix
+    - skip_ansible_lint
+
+- name: Generate new aliases
+  when: aliases.changed
+  shell: "/usr/bin/newaliases"
+  tags:
+    - config
+    - postfix
+    - skip_ansible_lint
+
+- name: Install qtop from postfixbuch
+  copy:
+    src: qtop
+    owner: root
+    mode: 0755
+    dest: /usr/local/bin/qtop
+
+- name: Start postfix
+  service:
+    name: postfix
+    state: started
+    enabled: true
+  tags:
+    - service
+    - postfix

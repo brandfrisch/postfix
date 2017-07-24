@@ -1,0 +1,80 @@
+#!/bin/sh
+#
+# qtop -- kleine Auslastungsanzeige für Postfix
+# Heinlein Professional Linux Support GmbH
+# <p.heinlein@heinlein-support.de>, 26.6.08
+#
+# Geschrieben für das Postfix-Buch
+# http://www.postfixbuch.de
+#
+# find kann sich u.U. über zwischenzeitlich gelöschte Maildateien
+# in der Queue aufregen, was die Anzeige zerstört  -- darum ist
+# "2>/dev/null" wichtig.
+#
+# Über "-n <seconds>" wird gesteuert, nach wievielen Sekunden sich
+# die Anzeige aktualisiert.
+#
+watch -n 5 "
+echo
+
+echo '    *** qtop -- Monitoring Postfix (1.1) ***'
+echo ' Peer Heinlein <p.heinlein@heinlein-support.de>'
+echo '  Das Postfix-Buch - http://www.postfixbuch.de'
+
+echo
+echo
+echo -n ' Load......................: '
+cat /proc/loadavg
+echo
+
+echo -n ' Anzahl Prozesse smtpd.....: '
+ps ax | grep "smtpd -n" | wc -l
+
+echo -n ' Anzahl Prozesse smtp......: '
+ps ax | grep "smtp -n"  | wc -l
+
+echo
+echo
+echo ' *** Postfix ***'
+echo
+
+echo -n ' Anzahl Mails in maildrop..: '
+find /var/spool/postfix/maildrop -type f 2>/dev/null | wc -l
+
+echo -n ' Anzahl Mails in incoming..: '
+find /var/spool/postfix/incoming -type f 2>/dev/null | wc -l
+
+echo -n ' Anzahl Mails in active....: '
+find /var/spool/postfix/active   -type f 2>/dev/null | wc -l
+
+echo -n ' Anzahl Mails in deferred..: '
+find /var/spool/postfix/deferred -type f 2>/dev/null | wc -l
+
+echo -n ' Anzahl Mails in hold......: '
+find /var/spool/postfix/hold -type f 2>/dev/null | wc -l
+
+
+if [ -d /var/lib/mailman/qfiles/ ] ; then
+echo
+echo
+echo ' *** Mailman ***'
+echo
+
+echo -n ' Anzahl Mails in MM-in.....: '
+find /var/lib/mailman/qfiles/in -type f 2>/dev/null | wc -l
+
+echo -n ' Anzahl Mails in MM-out....: '
+find /var/lib/mailman/qfiles/out -type f 2>/dev/null | wc -l
+
+echo -n ' Anzahl Mails in MM-shunt..: '
+find /var/lib/mailman/qfiles/shunt -type f 2>/dev/null | wc -l
+
+echo -n ' Anzahl Mails in MM-retry..: '
+find /var/lib/mailman/qfiles/retry -type f 2>/dev/null | wc -l
+fi
+
+
+echo
+echo
+echo ' Ende mit STRG-C.'
+"

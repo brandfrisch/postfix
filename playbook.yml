@@ -1,0 +1,12 @@
+---
+
+- hosts: all
+  vars:
+    postfix_catch_all_email: receiver@example.com
+    postfix_maps:
+      - tests/templates/test.hash.j2
+      - tests/templates/test.mysql
+    postfix_diffie_hellmann_strength:
+      - 512
+  roles:
+    - role: postfix
