@@ -2,6 +2,7 @@
 # tasks file for postfix
 
 - name: Disable configuration for Debian
+  when: ansible_os_family == 'Debian'
   debconf:
     name: 'postfix'
     question: 'postfix/main_mailer_type'
