@@ -1,6 +1,10 @@
 ---
 # tasks file for postfix
 
+- name: set distro-specific variables
+  include_vars: "{{ ansible_os_family | lower }}.yml"
+  ignore_errors: true
+
 - name: Disable configuration for Debian
   when: ansible_os_family == 'Debian'
   debconf:
@@ -38,7 +42,8 @@
   template:
     src: "{{ item }}"
     dest: "/etc/postfix/{{ item | basename | replace('.j2', '') }}"
-  notify: restart postfix
+  notify:
+    - reload postfix
   with_items:
     - "{{ postfix_config_files }}"
   tags:
@@ -60,7 +65,8 @@
   with_items:
     - "{{ postfix_maps }}"
   register: postfix_maps_update
-  notify: restart postfix
+  notify:
+    - reload postfix
   tags:
     - config
     - postfix

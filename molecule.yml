@@ -1,11 +1,14 @@
 ---
 docker:
   containers:
-    - name: postfix
+    - name: postfix-ubuntu-16-04
       image: brandfrisch/ubuntu-16.04
       image_version: 'latest'
       command: /lib/systemd/systemd
       privileged: true
+    - name: postfix-centos-6-9
+      image: brandfrisch/centos-6
+      image_version: latest
 
 verifier:
   name: goss

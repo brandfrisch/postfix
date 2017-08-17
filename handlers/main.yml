@@ -11,12 +11,5 @@
     name: postfix
     state: stopped
 
-- name: restart postfix
-  service:
-    name: postfix
-    state: restarted
-
 - name: reload postfix
-  service:
-    name: postfix
-    state: reloaded
+  command: postfix reload

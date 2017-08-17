@@ -1,0 +1,7 @@
+---
+
+postfix_packages:
+  - postfix
+  - mailutils
+
+postfix_smtp_tls_cafile: /etc/ssl/certs/ca-certificates.crt

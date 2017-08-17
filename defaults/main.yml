@@ -5,10 +5,6 @@ postfix_config_files:
   - main.cf.j2
   - master.cf.j2
 
-postfix_packages:
-  - postfix
-  - mailutils
-
 postfix_additional_packages: []
 
 postfix_maps: []
