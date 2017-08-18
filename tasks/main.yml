@@ -115,6 +115,18 @@
     dest: /usr/local/bin/qtop
 
 - name: Start postfix
+  when: ansible_os_family == 'RedHat'
+  service:
+    name: postfix
+    state: started
+    pattern: /usr/libexec/postfix/master
+    enabled: true
+  tags:
+    - service
+    - postfix
+
+- name: Start postfix
+  when: ansible_os_family == 'Debian'
   service:
     name: postfix
     state: started
