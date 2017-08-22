@@ -1,0 +1,19 @@
+---
+goss:
+  package:
+    postfix:
+      installed: true
+  service:
+    postfix:
+      enabled: true
+      running: true
+  user:
+    postfix:
+      exists: true
+      groups:
+        - postfix
+      home: /var/spool/postfix
+      shell: /bin/false
+  group:
+    postfix:
+      exists: true

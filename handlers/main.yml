@@ -1,18 +1,38 @@
 ---
 # handlers file for postfix
 
-- name: start postfix
+- name: start debian postfix
+  when: ansible_os_family == "Debian"
+  service:
+    name: postfix
+    state: started
+
+- name: stop debian postfix
+  when: ansible_os_family == "Debian"
+  service:
+    name: postfix
+    state: stopped
+
+- name: reload debian postfix
+  when: ansible_os_family == "Debian"
+  service:
+    name: postfix
+    state: reloaded
+
+- name: start redhat postfix
+  when: ansible_os_family == 'RedHat'
   service:
     name: postfix
     state: started
     pattern: /usr/libexec/postfix/master
 
-- name: stop postfix
+- name: stop redhat postfix
+  when: ansible_os_family == "RedHat"
   service:
     name: postfix
     state: stopped
+    pattern: /usr/libexec/postfix/master
 
-- name: reload postfix
-  service:
-    name: postfix
-    state: reloaded
+- name: reload redhat postfix
+  when: ansible_os_family == "RedHat"
+  command: postfix reload

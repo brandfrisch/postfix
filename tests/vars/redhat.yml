@@ -1,0 +1,21 @@
+---
+goss:
+  package:
+    postfix:
+      installed: true
+  # service:
+  #   postfix:
+  #     enabled: true
+  user:
+    postfix:
+      exists: true
+      groups:
+        - postfix
+      home: /var/spool/postfix
+      shell: /sbin/nologin
+  group:
+    postfix:
+      exists: true
+  process:
+    master:
+      running: true
