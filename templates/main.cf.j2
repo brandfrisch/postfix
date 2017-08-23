@@ -55,6 +55,6 @@ relayhost = {{ postfix_relay_host }}
 # Enable sasl smtp auth
 smtp_sasl_auth_enable = yes
 smtp_sasl_password_maps = {{ postfix_smtp_sasl_password_maps }}
-smtp_sasl_security_options = noanonymous, noplaintext
+smtp_sasl_security_options = noanonymous
 smtp_sasl_tls_security_options = noanonymous
 {% endif %}
