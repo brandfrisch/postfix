@@ -74,7 +74,7 @@
     - postfix
 
 - name: Hash postfix maps
-  when: item.changed and item.dest.endswith('hash')
+  when: postfix_maps_update is defined and item.changed and item.dest.endswith('hash')
   shell: "postmap {{ item.dest }}"
   with_items:
     - "{{ postfix_maps_update.results }}"
