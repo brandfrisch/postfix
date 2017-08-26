@@ -43,8 +43,8 @@
     src: "{{ item }}"
     dest: "/etc/postfix/{{ item | basename | replace('.j2', '') }}"
   notify:
-    - reload debian postfix
-    - reload redhat postfix
+    - restart debian postfix
+    - restart redhat postfix
   with_items:
     - "{{ postfix_config_files }}"
   tags:
@@ -67,8 +67,8 @@
     - "{{ postfix_maps }}"
   register: postfix_maps_update
   notify:
-    - reload debian postfix
-    - reload redhat postfix
+    - restart debian postfix
+    - restart redhat postfix
   tags:
     - config
     - postfix
