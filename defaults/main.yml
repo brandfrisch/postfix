@@ -5,12 +5,14 @@ postfix_hostname: "{{ inventory_hostname }}"
 
 postfix_config_files:
   - main.cf.j2
-  - "{{ ansible_os_family | lower }}/master.cf.j2"
+  - master.cf.j2
 
 postfix_additional_packages: []
 
 postfix_maps: []
 
-postfix_diffie_hellmann_strength:
-  - 512
-  - 2048
+postfix_packages:
+  - postfix
+  - mailutils
+
+postfix_smtp_tls_cafile: /etc/ssl/certs/ca-certificates.crt

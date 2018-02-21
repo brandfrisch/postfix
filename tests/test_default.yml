@@ -1,12 +1,25 @@
 ---
 - hosts: all
   gather_facts: true
-
-  pre_tasks:
-
-    - name: set distro-specific variables
-      include_vars: "{{ ansible_os_family | lower }}.yml"
-      ignore_errors: true
+  vars:
+    goss:
+      package:
+        postfix:
+          installed: true
+      service:
+        postfix:
+          enabled: true
+          running: true
+      user:
+        postfix:
+          exists: true
+          groups:
+            - postfix
+          home: /var/spool/postfix
+          shell: /bin/false
+      group:
+        postfix:
+          exists: true
 
   post_tasks:
 

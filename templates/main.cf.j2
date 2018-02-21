@@ -27,8 +27,6 @@ smtp_use_tls = yes
 # smtpd
 smtpd_banner = $myhostname ESMTP
 smtpd_tls_ciphers = medium
-smtpd_tls_dh1024_param_file = ${config_directory}/dh2048.pem
-smtpd_tls_dh512_param_file = ${config_directory}/dh512.pem
 smtpd_tls_eecdh_grade = strong
 smtpd_tls_exclude_ciphers = EXPORT, LOW, MD5, SEED, IDEA, RC2
 smtpd_tls_mandatory_ciphers = medium

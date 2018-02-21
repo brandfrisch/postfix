@@ -1,12 +1,7 @@
 ---
 # tasks file for postfix
 
-- name: set distro-specific variables
-  include_vars: "{{ ansible_os_family | lower }}.yml"
-  ignore_errors: true
-
 - name: Disable configuration for Debian
-  when: ansible_os_family == 'Debian'
   debconf:
     name: 'postfix'
     question: 'postfix/main_mailer_type'
@@ -27,24 +22,12 @@
     - package
     - postfix
 
-- name: Generating Diffie-Hellmann pems
-  shell: "openssl gendh -out /etc/postfix/dh_{{ item }}.pem -2 {{ item }}"
-  args:
-    creates: "/etc/postfix/dh_{{ item }}.pem"
-  with_items:
-    - "{{ postfix_diffie_hellmann_strength }}"
-  tags:
-    - config
-    - postfix
-    - skip_ansible_lint
-
 - name: Configure postfix
   template:
     src: "{{ item }}"
     dest: "/etc/postfix/{{ item | basename | replace('.j2', '') }}"
   notify:
-    - restart debian postfix
-    - restart redhat postfix
+    - restart postfix
   with_items:
     - "{{ postfix_config_files }}"
   tags:
@@ -67,8 +50,7 @@
     - "{{ postfix_maps }}"
   register: postfix_maps_update
   notify:
-    - restart debian postfix
-    - restart redhat postfix
+    - restart postfix
   tags:
     - config
     - postfix
@@ -117,18 +99,6 @@
     dest: /usr/local/bin/qtop
 
 - name: Start postfix
-  when: ansible_os_family == 'RedHat'
-  service:
-    name: postfix
-    state: started
-    pattern: /usr/libexec/postfix/master
-    enabled: true
-  tags:
-    - service
-    - postfix
-
-- name: Start postfix
-  when: ansible_os_family == 'Debian'
   service:
     name: postfix
     state: started

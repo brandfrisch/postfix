@@ -1,7 +1,0 @@
----
-
-postfix_packages:
-  - postfix
-  - mailx
-
-postfix_smtp_tls_cafile: /etc/pki/tls/certs/ca-bundle.crt
