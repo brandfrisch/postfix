@@ -1,4 +1,4 @@
-postfix [![Build Status](https://travis-ci.org/brandfrisch/postfix.svg?branch=master)](https://travis-ci.org/brandfrisch/postfix)
+postfix
 =========
 
 This is a rule to setup postfix on a unix system
