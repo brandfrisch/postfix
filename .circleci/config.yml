@@ -45,4 +45,3 @@ jobs:
           command: |
             source ~/.venv/bin/activate
             molecule test
-            
