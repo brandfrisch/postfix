@@ -26,6 +26,9 @@
   template:
     src: "{{ item }}"
     dest: "/etc/postfix/{{ item | basename | replace('.j2', '') }}"
+    owner: root
+    group: root
+    mode: 0644
   notify:
     - restart postfix
   with_items:
@@ -38,6 +41,9 @@
   file:
     path: /etc/postfix/maps
     state: directory
+    owner: root
+    group: root
+    mode: 0755
   tags:
     - config
     - postfix
@@ -46,6 +52,9 @@
   template:
     src: "{{ item }}"
     dest: "/etc/postfix/maps/{{ item | basename | replace('.j2', '') }}"
+    owner: root
+    group: root
+    mode: 0644
   with_items:
     - "{{ postfix_maps }}"
   register: postfix_maps_update
@@ -70,6 +79,9 @@
   template:
     src: aliases.j2
     dest: /etc/aliases
+    owner: root
+    group: root
+    mode: 0644
   register: aliases
   tags:
     - config
@@ -95,6 +107,7 @@
   copy:
     src: qtop
     owner: root
+    group: root
     mode: 0755
     dest: /usr/local/bin/qtop
 
