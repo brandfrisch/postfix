@@ -22,6 +22,15 @@
     - package
     - postfix
 
+- name: Add user postfix to group ssl-cert
+  user:
+    name: postfix
+    groups: ssl-cert
+    append: true
+  tags:
+    - setup
+    - postfix
+
 - name: Configure postfix
   template:
     src: "{{ item }}"
